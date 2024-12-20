@@ -1,0 +1,42 @@
+1|Xuz6NgMmUuv3H9AgSp0s1ikFYxZLtJAXn5bpn3JA90218cf6
+
+{
+  "message": "Device created successfully",
+  "device": {
+    "device_name": "Device1",
+    "device_ip": "192.168.1.1",
+    "api_key": "vl9S8rSPyr6j95zlmH16jhKsWKq3Ctf2",
+    "updated_at": "2024-12-19T15:21:58.000000Z",
+    "created_at": "2024-12-19T15:21:58.000000Z",
+    "id": 1
+  }
+}
+{
+  "message": "Check-in successful",
+  "attendance": {
+    "user_id": 1,
+    "device_id": 1,
+    "check_in": "2024-12-19T15:24:54.767654Z",
+    "updated_at": "2024-12-19T15:24:54.000000Z",
+    "created_at": "2024-12-19T15:24:54.000000Z",
+    "id": 1
+  }
+}
+
+Route::post('/login', function (Request $request) {
+    $credentials = $request->validate([ // Gunakan objek $request, bukan facade Request
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
+
+    if (Auth::attempt($credentials)) {
+        $user = Auth::user();
+
+        return response()->json([
+            'token' => $user->createToken('admin-token')->plainTextToken,
+            'message' => 'Login successful',
+        ]);
+    }
+
+    return response()->json(['error' => 'Invalid credentials'], 401);
+});
